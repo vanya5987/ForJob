@@ -1,5 +1,20 @@
 using Google.Apis.Drive.v3;
+using ShareYourText.GoogleServices;
+using ShareYourText.LinkManager;
+using ShareYourText.Services;
 using System.Diagnostics;
+using ShareYourText.Controllers;
+using ShareYourText.LinkChanges;
+using ShareYourText.UIManager;
+using ShareYourText.Database;
+using ShareYourText.UserInteraction;
+using ShareYourText.Interfaces.UIManager;
+using ShareYourText.Interfaces.LinkManger;
+using ShareYourText.Interfaces.Database;
+using ShareYourText.Interfaces.Services;
+using ShareYourText.Interfaces.GoogleServices;
+using ShareYourText.Interfaces.Controllers;
+using ShareYourText.Interfaces.UserInteraction;
 
 namespace ShareYourText
 {
@@ -9,8 +24,8 @@ namespace ShareYourText
         private readonly IShowUI _ui = new UI();
         private readonly IHashFinder _hashFinder = new HashFinder();
         private readonly IDatabaseInitializator _databaseInitializator = new DatabaseInitializator();
-        private readonly IDatabaseLinkAdder _linkAdder = new DatabaseLinkAdder();
-        private readonly IDatabaseLinkRemover _linkRemover = new DatabaseLinkRemover();
+        private readonly ILinkAdder _linkAdder = new LinkAdder();
+        private readonly ILinkRemover _linkRemover = new LinkRemover();
         private readonly IUserInputGetter _userInputGetter = new UserInputGetter();
 
         private IShowFileText _showFileText;
@@ -30,9 +45,9 @@ namespace ShareYourText
             InitializeComponent();
         }
 
-        private void InitializeProgram()
+        private async void InitializeProgram()
         {
-            _driveService = _getDriveService.InitializeDriveService("C:\\Users\\admin\\Desktop\\credentials.json");
+            _driveService = await _getDriveService.InitializeDriveServiceAsync();
             _saveText = new GoogleDriveUpload(_driveService);
             _showText = new GoogleDriveUpload(_driveService);
             _extractFile = new GoogleDriveUpload(_driveService);
@@ -44,14 +59,14 @@ namespace ShareYourText
             _hashLink = new LinkCreator(_generateLink);
 
             _postController = new PostController(_hashFinder, _userInputGetter);
-            _showFileText = new FileTextShowing(_hashFinder,_userInputGetter);
-            _databaseInitializator.InitializeDatabase();
+            _showFileText = new FileTextShowing(_hashFinder, _userInputGetter);
+            await _databaseInitializator.InitializeDatabaseAsync();
 
             _linkGetter = new LinkGetter(_baseLink, _hashLink);
             _linkRepositoryManager = new LinkRepositoryManager(_linkAdder, _linkRemover);
 
-            _linkRepositoryManager.AddLink();
-            _linkRepositoryManager.RemoveLink();
+            await _linkRepositoryManager.AddLinkAsync();
+            await _linkRepositoryManager.RemoveLinkAsync();
 
             ShowLink();
             UIStateController();
@@ -86,17 +101,17 @@ namespace ShareYourText
 
         private void ShowTopClicked(object sender, EventArgs e)
         {
-            _ui.ShowPopularityLinks(TopLinksList);
+            _ui.ShowPopularityLinksAsync(TopLinksList);
         }
 
         private void LikeClicked(object sender, EventArgs e)
         {
-            _postController.LikePost();
+            _postController.LikePostAsync();
         }
 
         private void DislikeClicked(object sender, EventArgs e)
         {
-            _postController.DislikePost();
+            _postController.DislikePostAsync();
         }
 
         private void ListVievClicked(object sender, MouseEventArgs e)
@@ -118,7 +133,7 @@ namespace ShareYourText
             if (string.IsNullOrEmpty(UserInputLink.Text))
                 throw new ArgumentNullException("¬ведите ссылку в поле дл€ ссылки...");
 
-            _showFileText.ShowFileText(TextViever, _extractFile, _showText);
+            _showFileText.ShowFileTextAsync(TextViever, _extractFile, _showText);
         }
     }
 }

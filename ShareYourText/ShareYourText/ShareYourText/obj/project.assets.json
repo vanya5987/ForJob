@@ -1333,11 +1333,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\admin\\source\\repos\\ShareYourText\\ShareYourText\\ShareYourText.csproj",
+      "projectUniqueName": "C:\\Users\\admin\\Desktop\\ShareYourText\\ShareYourText\\ShareYourText.csproj",
       "projectName": "ShareYourText",
-      "projectPath": "C:\\Users\\admin\\source\\repos\\ShareYourText\\ShareYourText\\ShareYourText.csproj",
+      "projectPath": "C:\\Users\\admin\\Desktop\\ShareYourText\\ShareYourText\\ShareYourText.csproj",
       "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\admin\\source\\repos\\ShareYourText\\ShareYourText\\obj\\",
+      "outputPath": "C:\\Users\\admin\\Desktop\\ShareYourText\\ShareYourText\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
